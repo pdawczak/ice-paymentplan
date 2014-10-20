@@ -91,7 +91,8 @@ class BursaryOffFinalPaymentModifier implements PlanModifierInterface
      */
     private function getIndicesToSubtractFrom(array $reversedOriginalPlannedPayments)
     {
-        $indicesToSubtractFrom = [];
+        //We always want to subtract from the final payment, which will be the first in the given reverse-order array
+        $indicesToSubtractFrom = [0];
 
         /*
          * The business policy is to deduct the bursary from the final payment of each year of the course.
@@ -100,27 +101,22 @@ class BursaryOffFinalPaymentModifier implements PlanModifierInterface
          * payment) and also from any payment a due a year earlier (and a year earlier than that...).
          */
         foreach ($reversedOriginalPlannedPayments as $index => $plannedPayment) {
-            //Only consider dated payments here, and if we've already identified a payment to deduct from, continue
-            //unless this payment is the corresponding payment for the previous year.
-            if (
-                !$plannedPayment->hasDueDate() ||
-                (
-                    isset($previouslyIdentifiedPayment) &&
-                    !$plannedPayment->getDueDate()->isExactlyOneYearEarlierThan($previouslyIdentifiedPayment->getDueDate())
-                )
-            ) {
+            //On first run, note that we've already chosen to subtract from the final payment
+            if (!isset($previouslyIdentifiedPayment)) {
+                $previouslyIdentifiedPayment = $plannedPayment;
                 continue;
             }
 
-            //This payment should be deducted from. Remember its index.
-            $indicesToSubtractFrom[] = $index;
-            $previouslyIdentifiedPayment = $plannedPayment;
-        }
-
-        if (0 === count($indicesToSubtractFrom)) {
-            //No payments were identified - this will be the case if full payment is due immediately. Deduct everything
-            //from the final (and probably only) payment.
-            $indicesToSubtractFrom = [0];
+            //Only deduct from other payments if they are exactly one year earlier than the payment previously marked
+            //for deduction. This will be the case if the payment plan spans multiple years.
+            if (
+                $plannedPayment->hasDueDate() &&
+                $plannedPayment->getDueDate()->isExactlyOneYearEarlierThan($previouslyIdentifiedPayment->getDueDate())
+            ) {
+                //This payment should be deducted from. Remember its index.
+                $indicesToSubtractFrom[] = $index;
+                $previouslyIdentifiedPayment = $plannedPayment;
+            }
         }
 
         return $indicesToSubtractFrom;
