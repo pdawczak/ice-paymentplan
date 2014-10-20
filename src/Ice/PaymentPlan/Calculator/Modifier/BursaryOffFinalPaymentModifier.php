@@ -60,11 +60,37 @@ class BursaryOffFinalPaymentModifier implements PlanModifierInterface
      */
     private function subtractBursaryFromPlan(PaymentPlan $plan, Money $amountToSubtract)
     {
-        /** @var PlannedPayment[] $reversedOriginalPlannedPayments */
-        $reversedOriginalPlannedPayments = array_reverse($plan->getPlannedPayments());
-
         /** @var PlannedPayment[] $newReversedPlannedPayments */
-        $newReversedPlannedPayments = [];
+        $newReversedPlannedPayments = array_reverse($plan->getPlannedPayments());
+
+        //Work out which payments to spread the subtraction over.
+        $indicesToSubtractFrom = $this->getIndicesToSubtractFrom($newReversedPlannedPayments);
+
+        //Work out the sizes of the individual subtractions
+        $spreadDiscounts = $this->splitMoneyEvenly($amountToSubtract, count($indicesToSubtractFrom));
+
+        foreach ($spreadDiscounts as $loopIndex => $discountPart) {
+            $paymentIndex = $indicesToSubtractFrom[$loopIndex];
+            $newReversedPlannedPayments[$paymentIndex] =
+                $newReversedPlannedPayments[$paymentIndex]->subtractFromAmount($discountPart);
+        }
+
+        return new PaymentPlan(
+            array_reverse($newReversedPlannedPayments),
+            $plan->getShortDescription(),
+            $plan->getLongDescription()
+        );
+    }
+
+    /**
+     * Given an array of planned payments *IN REVERSE CHRONOLOGICAL ORDER*, return the indices of those which should
+     * be subtracted from under this policy.
+     *
+     * @param PlannedPayment[] $reversedOriginalPlannedPayments
+     * @return array|integer[]
+     */
+    private function getIndicesToSubtractFrom(array $reversedOriginalPlannedPayments)
+    {
         $indicesToSubtractFrom = [];
 
         /*
@@ -101,19 +127,7 @@ class BursaryOffFinalPaymentModifier implements PlanModifierInterface
             $indicesToSubtractFrom = [0];
         }
 
-        $spreadDiscounts = $this->splitMoneyEvenly($amountToSubtract, count($indicesToSubtractFrom));
-
-        foreach ($spreadDiscounts as $loopIndex => $discountPart) {
-            $paymentIndex = $indicesToSubtractFrom[$loopIndex];
-            $newReversedPlannedPayments[$paymentIndex] =
-                $newReversedPlannedPayments[$paymentIndex]->subtractFromAmount($discountPart);
-        }
-
-        return new PaymentPlan(
-            array_reverse($newReversedPlannedPayments),
-            $plan->getShortDescription(),
-            $plan->getLongDescription()
-        );
+        return $indicesToSubtractFrom;
     }
 
     /**
