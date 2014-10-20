@@ -11,6 +11,12 @@ use Ice\PaymentPlan\PlannedPayment;
 use Ice\PaymentPlan\PaymentPlan;
 use Money\Money;
 
+/**
+ * Class PercentOnDateCalculator
+ *
+ * @package Ice\PaymentPlan\Calculator
+ * @author Rob Hogan <rh389>
+ */
 class PercentOnDateCalculator implements PaymentPlanCalculatorInterface
 {
     public function supportsDefinition(PlanDefinition $planCode)

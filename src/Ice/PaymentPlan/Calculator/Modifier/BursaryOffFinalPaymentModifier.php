@@ -10,6 +10,12 @@ use Ice\PaymentPlan\PlannedPayment;
 use Ice\PaymentPlan\Calculator\PaymentPlanCalculatorInterface;
 use Money\Money;
 
+/**
+ * Class BursaryOffFinalPaymentModifier
+ *
+ * @package Ice\PaymentPlan\Calculator\Modifier
+ * @author Rob Hogan <rh389>
+ */
 class BursaryOffFinalPaymentModifier implements PlanModifierInterface
 {
     /** @var PaymentPlanCalculatorInterface */
@@ -145,8 +151,12 @@ class BursaryOffFinalPaymentModifier implements PlanModifierInterface
         return $this->childCalculator->isAvailable($definition, $amountToPay, $parameters);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setBaseCalculator(PaymentPlanCalculatorInterface $baseCalculator)
     {
         $this->childCalculator = $baseCalculator;
+        return $this;
     }
 }

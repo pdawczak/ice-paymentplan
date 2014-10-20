@@ -10,8 +10,8 @@ use Money\Money;
 /**
  * Class CompositePlanCalculator
  *
- * The composite calculator delegates plan generation to the the first registered calculator which supports the given definition.
- * This is intended to be used as a 'Master' calculator when given all other calculator implementations
+ * The composite calculator delegates plan generation to the the first registered calculator which supports the given
+ * definition.
  *
  * @package Ice\PaymentPlan\Calculator
  * @author Rob Hogan <rh389>
