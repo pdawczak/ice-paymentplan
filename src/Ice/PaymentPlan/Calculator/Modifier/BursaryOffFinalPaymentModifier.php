@@ -100,16 +100,10 @@ class BursaryOffFinalPaymentModifier implements PlanModifierInterface
          * payment) and also from any payment a due a year earlier (and a year earlier than that...).
          */
         foreach ($reversedOriginalPlannedPayments as $index => $plannedPayment) {
-            $newReversedPlannedPayments[] = $plannedPayment;
-
-            //Only consider dated payments here
-            if (!$plannedPayment->hasDueDate()) {
-                continue;
-            }
-
-            //If we've already identified a payment to deduct from, continue unless this payment is the corresponding
-            //payment for the previous year.
+            //Only consider dated payments here, and if we've already identified a payment to deduct from, continue
+            //unless this payment is the corresponding payment for the previous year.
             if (
+                !$plannedPayment->hasDueDate() ||
                 isset($previouslyIdentifiedPayment) &&
                 !$plannedPayment->getDueDate()->isExactlyOneYearEarlierThan($previouslyIdentifiedPayment->getDueDate())
             ) {
