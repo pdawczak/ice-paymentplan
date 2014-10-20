@@ -104,8 +104,10 @@ class BursaryOffFinalPaymentModifier implements PlanModifierInterface
             //unless this payment is the corresponding payment for the previous year.
             if (
                 !$plannedPayment->hasDueDate() ||
-                isset($previouslyIdentifiedPayment) &&
-                !$plannedPayment->getDueDate()->isExactlyOneYearEarlierThan($previouslyIdentifiedPayment->getDueDate())
+                (
+                    isset($previouslyIdentifiedPayment) &&
+                    !$plannedPayment->getDueDate()->isExactlyOneYearEarlierThan($previouslyIdentifiedPayment->getDueDate())
+                )
             ) {
                 continue;
             }
