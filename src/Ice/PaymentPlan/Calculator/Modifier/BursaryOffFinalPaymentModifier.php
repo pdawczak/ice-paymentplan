@@ -1,19 +1,19 @@
 <?php
 
-namespace Ice\PaymentPlan\Factory\Modifier;
+namespace Ice\PaymentPlan\Calculator\Modifier;
 
-use Ice\PaymentPlan\Factory\PlanModifierInterface;
+use Ice\PaymentPlan\Calculator\PlanModifierInterface;
 use Ice\PaymentPlan\PlanDefinition;
 use Ice\PaymentPlan\PlanParameters;
 use Ice\PaymentPlan\PaymentPlan;
 use Ice\PaymentPlan\PlannedPayment;
-use Ice\PaymentPlan\Factory\PaymentPlanFactoryInterface;
+use Ice\PaymentPlan\Calculator\PaymentPlanCalculatorInterface;
 use Money\Money;
 
 class BursaryOffFinalPaymentModifier implements PlanModifierInterface
 {
-    /** @var PaymentPlanFactoryInterface */
-    private $childFactory;
+    /** @var PaymentPlanCalculatorInterface */
+    private $childCalculator;
 
     /**
      * @param PlanDefinition $definition
@@ -22,7 +22,7 @@ class BursaryOffFinalPaymentModifier implements PlanModifierInterface
     public function supportsDefinition(PlanDefinition $definition)
     {
         //Support exactly what the child supports
-        return $this->childFactory->supportsDefinition($definition);
+        return $this->childCalculator->supportsDefinition($definition);
     }
 
     /**
@@ -40,11 +40,11 @@ class BursaryOffFinalPaymentModifier implements PlanModifierInterface
         ) {
             $absoluteBursaryTotal = Money::GBP($bursaryTotalDeduction);
             $amountBeforeBursary = $amountToPay->add($absoluteBursaryTotal);
-            $planWithoutBursary = $this->childFactory->getPlan($definition, $amountBeforeBursary, $parameters);
+            $planWithoutBursary = $this->childCalculator->getPlan($definition, $amountBeforeBursary, $parameters);
             return $this->subtractBursaryFromPlan($planWithoutBursary, $absoluteBursaryTotal);
         }
 
-        return $this->childFactory->getPlan($definition, $amountToPay, $parameters);
+        return $this->childCalculator->getPlan($definition, $amountToPay, $parameters);
     }
 
     /**
@@ -142,11 +142,11 @@ class BursaryOffFinalPaymentModifier implements PlanModifierInterface
      */
     public function isAvailable(PlanDefinition $definition, Money $amountToPay, PlanParameters $parameters)
     {
-        return $this->childFactory->isAvailable($definition, $amountToPay, $parameters);
+        return $this->childCalculator->isAvailable($definition, $amountToPay, $parameters);
     }
 
-    public function setBaseFactory(PaymentPlanFactoryInterface $baseFactory)
+    public function setBaseCalculator(PaymentPlanCalculatorInterface $baseCalculator)
     {
-        $this->childFactory = $baseFactory;
+        $this->childCalculator = $baseCalculator;
     }
 }

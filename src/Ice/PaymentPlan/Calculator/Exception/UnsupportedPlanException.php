@@ -1,6 +1,6 @@
 <?php
 
-namespace Ice\PaymentPlan\Factory\Exception;
+namespace Ice\PaymentPlan\Calculator\Exception;
 
 class UnsupportedPlanException extends \Exception
 {

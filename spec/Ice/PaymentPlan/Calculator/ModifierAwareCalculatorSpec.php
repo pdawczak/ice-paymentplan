@@ -1,20 +1,20 @@
 <?php
 
-namespace spec\Ice\PaymentPlan\Factory;
+namespace spec\Ice\PaymentPlan\Calculator;
 
 use Ice\PaymentPlan\PaymentPlan;
-use Ice\PaymentPlan\Factory\PlanModifierInterface;
-use Ice\PaymentPlan\Factory\PaymentPlanFactoryInterface;
+use Ice\PaymentPlan\Calculator\PlanModifierInterface;
+use Ice\PaymentPlan\Calculator\PaymentPlanCalculatorInterface;
 use Ice\PaymentPlan\PlanParameters;
 use Ice\PaymentPlan\PlanDefinition;
 use Money\Money;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class ModifierAwareFactorySpec extends ObjectBehavior
+class ModifierAwareCalculatorSpec extends ObjectBehavior
 {
     function let(
-        PaymentPlanFactoryInterface $basePlan
+        PaymentPlanCalculatorInterface $basePlan
     )
     {
         $this->beConstructedWith($basePlan);
@@ -22,17 +22,17 @@ class ModifierAwareFactorySpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Ice\PaymentPlan\Factory\ModifierAwareFactory');
-        $this->shouldImplement('Ice\PaymentPlan\Factory\PaymentPlanFactoryInterface');
+        $this->shouldHaveType('Ice\PaymentPlan\Calculator\ModifierAwareCalculator');
+        $this->shouldImplement('Ice\PaymentPlan\Calculator\PaymentPlanCalculatorInterface');
     }
 
-    function it_should_support_the_definitions_of_its_base_factory($basePlan, $mockBool, PlanDefinition $def)
+    function it_should_support_the_definitions_of_its_base_calculator($basePlan, $mockBool, PlanDefinition $def)
     {
         $basePlan->supportsDefinition($def)->willReturn($mockBool);
         $this->supportsDefinition($def)->shouldReturn($mockBool);
     }
 
-    function it_should_have_the_same_availability_as_its_base_factory(
+    function it_should_have_the_same_availability_as_its_base_calculator(
         $basePlan,
         $mockBool,
         PlanDefinition $def,
@@ -59,7 +59,7 @@ class ModifierAwareFactorySpec extends ObjectBehavior
 
         $this->registerModifier('mymodifier', $modifier);
 
-        $modifier->setBaseFactory($basePlan)->shouldBeCalled();
+        $modifier->setBaseCalculator($basePlan)->shouldBeCalled();
         $modifier->getPlan($definition, Money::GBP(100), PlanParameters::none())
             ->shouldBeCalled()
             ->willReturn($planProvidedByModifier)

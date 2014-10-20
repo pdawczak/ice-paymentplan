@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\Ice\PaymentPlan\Factory;
+namespace spec\Ice\PaymentPlan\Calculator;
 
 use Ice\PaymentPlan\PlanDefinition;
 use Ice\PaymentPlan\PlanParameters;
@@ -11,12 +11,12 @@ use Money\Money;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class PercentOnDateFactorySpec extends ObjectBehavior
+class PercentOnDateCalculatorSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('Ice\PaymentPlan\Factory\PercentOnDateFactory');
-        $this->shouldImplement('Ice\PaymentPlan\Factory\PaymentPlanFactoryInterface');
+        $this->shouldHaveType('Ice\PaymentPlan\Calculator\PercentOnDateCalculator');
+        $this->shouldImplement('Ice\PaymentPlan\Calculator\PaymentPlanCalculatorInterface');
     }
 
     function it_should_only_support_percent_on_date()

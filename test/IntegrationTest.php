@@ -3,11 +3,11 @@
 namespace test;
 
 use Ice\PaymentPlan\DueDate;
-use Ice\PaymentPlan\Factory\LegacySupportDecorator;
-use Ice\PaymentPlan\Factory\Modifier\BursaryOffFinalPaymentModifier;
-use Ice\PaymentPlan\Factory\ModifierAwareFactory;
-use Ice\PaymentPlan\Factory\PaymentPlanCompositeFactory;
-use Ice\PaymentPlan\Factory\PercentOnDateFactory;
+use Ice\PaymentPlan\Calculator\LegacySupportDecorator;
+use Ice\PaymentPlan\Calculator\Modifier\BursaryOffFinalPaymentModifier;
+use Ice\PaymentPlan\Calculator\ModifierAwareCalculator;
+use Ice\PaymentPlan\Calculator\CompositePlanCalculator;
+use Ice\PaymentPlan\Calculator\PercentOnDateCalculator;
 use Ice\PaymentPlan\PaymentPlan;
 use Ice\PaymentPlan\PlanDefinition;
 use Ice\PaymentPlan\PlannedPayment;
@@ -20,9 +20,9 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
     function setUp()
     {
-        $compositeFactory = new PaymentPlanCompositeFactory();
-        $compositeFactory->registerFactory(new PercentOnDateFactory());
-        $this->factory = new ModifierAwareFactory($compositeFactory);
+        $compositeFactory = new CompositePlanCalculator();
+        $compositeFactory->registerFactory(new PercentOnDateCalculator());
+        $this->factory = new ModifierAwareCalculator($compositeFactory);
         $this->factory->registerModifier('bursary_off_final_payment', new BursaryOffFinalPaymentModifier());
     }
 

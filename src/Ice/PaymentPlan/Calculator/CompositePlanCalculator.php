@@ -1,46 +1,46 @@
 <?php
 
-namespace Ice\PaymentPlan\Factory;
+namespace Ice\PaymentPlan\Calculator;
 
 use Ice\PaymentPlan\PlanDefinition;
-use Ice\PaymentPlan\Factory\Exception\UnsupportedPlanException;
+use Ice\PaymentPlan\Calculator\Exception\UnsupportedPlanException;
 use Ice\PaymentPlan\PlanParameters;
 use Money\Money;
 
 /**
- * Class PaymentPlanCompositeFactory
+ * Class CompositePlanCalculator
  *
- * The composite factory delegates plan generation to the the first registered factory which supports the given definition.
- * This is intended to be used as a 'Master' factory when given all other factory implementations
+ * The composite calculator delegates plan generation to the the first registered calculator which supports the given definition.
+ * This is intended to be used as a 'Master' calculator when given all other calculator implementations
  *
- * @package Ice\PaymentPlan\Factory
+ * @package Ice\PaymentPlan\Calculator
  * @author Rob Hogan <rh389>
  */
-class PaymentPlanCompositeFactory implements PaymentPlanFactoryInterface
+class CompositePlanCalculator implements PaymentPlanCalculatorInterface
 {
     /**
-     * @var PaymentPlanFactoryInterface[] array
+     * @var PaymentPlanCalculatorInterface[] array
      */
     protected $factories = [];
 
     /**
-     * @param PaymentPlanFactoryInterface $factory
+     * @param PaymentPlanCalculatorInterface $calculator
      */
-    public function registerFactory(PaymentPlanFactoryInterface $factory)
+    public function registerCalculator(PaymentPlanCalculatorInterface $calculator)
     {
-        $this->factories[] = $factory;
+        $this->factories[] = $calculator;
     }
 
     /**
      * @param PlanDefinition $definition
      * @throws UnsupportedPlanException
-     * @return PaymentPlanFactoryInterface
+     * @return PaymentPlanCalculatorInterface
      */
-    private function getFactoryFor(PlanDefinition $definition)
+    private function getCalculatorFor(PlanDefinition $definition)
     {
-        foreach ($this->factories as $factory) {
-            if ($factory->supportsDefinition($definition)) {
-                return $factory;
+        foreach ($this->factories as $calculator) {
+            if ($calculator->supportsDefinition($definition)) {
+                return $calculator;
             }
         }
         throw new UnsupportedPlanException('Unsupported plan: '. $definition);
@@ -56,7 +56,7 @@ class PaymentPlanCompositeFactory implements PaymentPlanFactoryInterface
      */
     public function getPlan(PlanDefinition $definition, Money $amountToPay, PlanParameters $parameters)
     {
-        return $this->getFactoryFor($definition)->getPlan($definition, $amountToPay, $parameters);
+        return $this->getCalculatorFor($definition)->getPlan($definition, $amountToPay, $parameters);
     }
 
     /**
@@ -68,7 +68,7 @@ class PaymentPlanCompositeFactory implements PaymentPlanFactoryInterface
      */
     public function isAvailable(PlanDefinition $definition, Money $amountToPay, PlanParameters $parameters)
     {
-        return $this->getFactoryFor($definition)->isAvailable($definition, $amountToPay, $parameters);
+        return $this->getCalculatorFor($definition)->isAvailable($definition, $amountToPay, $parameters);
     }
 
     /**
@@ -77,8 +77,8 @@ class PaymentPlanCompositeFactory implements PaymentPlanFactoryInterface
      */
     public function supportsDefinition(PlanDefinition $definition)
     {
-        foreach ($this->factories as $factory) {
-            if ($factory->supportsDefinition($definition)) {
+        foreach ($this->factories as $calculator) {
+            if ($calculator->supportsDefinition($definition)) {
                 return true;
             }
         }

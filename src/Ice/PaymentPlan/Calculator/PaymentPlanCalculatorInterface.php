@@ -1,13 +1,13 @@
 <?php
 
-namespace Ice\PaymentPlan\Factory;
+namespace Ice\PaymentPlan\Calculator;
 
 use Ice\PaymentPlan\PlanDefinition;
 use Ice\PaymentPlan\PlanParameters;
 use Ice\PaymentPlan\PaymentPlan;
 use Money\Money;
 
-interface PaymentPlanFactoryInterface
+interface PaymentPlanCalculatorInterface
 {
     /**
      * @param PlanDefinition $definition

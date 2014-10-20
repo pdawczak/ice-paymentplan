@@ -1,9 +1,9 @@
 <?php
 
-namespace spec\Ice\PaymentPlan\Factory;
+namespace spec\Ice\PaymentPlan\Calculator;
 
-use Ice\PaymentPlan\Factory\Exception\UnsupportedPlanException;
-use Ice\PaymentPlan\Factory\PaymentPlanFactoryInterface;
+use Ice\PaymentPlan\Calculator\Exception\UnsupportedPlanException;
+use Ice\PaymentPlan\Calculator\PaymentPlanCalculatorInterface;
 use Ice\PaymentPlan\PaymentPlan;
 use Ice\PaymentPlan\PlanDefinition;
 use Ice\PaymentPlan\PlanParameters;
@@ -11,21 +11,21 @@ use Money\Money;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class PaymentPlanCompositeFactorySpec extends ObjectBehavior
+class CompositePlanCalculatorSpec extends ObjectBehavior
 {
     function let(
-        PaymentPlanFactoryInterface $delegatedFooFactory
+        PaymentPlanCalculatorInterface $delegatedFooCalculator
     )
     {
-        $delegatedFooFactory->supportsDefinition('Foo')->willReturn(true);
-        $delegatedFooFactory->supportsDefinition(Argument::not('Foo'))->willReturn(false);
-        $this->registerFactory($delegatedFooFactory);
+        $delegatedFooCalculator->supportsDefinition('Foo')->willReturn(true);
+        $delegatedFooCalculator->supportsDefinition(Argument::not('Foo'))->willReturn(false);
+        $this->registerCalculator($delegatedFooCalculator);
     }
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Ice\PaymentPlan\Factory\PaymentPlanCompositeFactory');
-        $this->shouldImplement('Ice\PaymentPlan\Factory\PaymentPlanFactoryInterface');
+        $this->shouldHaveType('Ice\PaymentPlan\Calculator\CompositePlanCalculator');
+        $this->shouldImplement('Ice\PaymentPlan\Calculator\PaymentPlanCalculatorInterface');
     }
 
     function it_should_throw_an_exception_for_an_unsupported_plan()
@@ -39,12 +39,12 @@ class PaymentPlanCompositeFactorySpec extends ObjectBehavior
         );
     }
 
-    function it_should_use_a_factory_to_return_a_plan(
+    function it_should_use_a_calculator_to_return_a_plan(
         PaymentPlan $fooPlan,
-        $delegatedFooFactory
+        $delegatedFooCalculator
     )
     {
-        $delegatedFooFactory->getPlan(
+        $delegatedFooCalculator->getPlan(
             PlanDefinition::withName('Foo'),
             Money::GBP(100),
             PlanParameters::none()

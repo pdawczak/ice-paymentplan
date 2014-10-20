@@ -1,16 +1,17 @@
 <?php
 
-namespace Ice\PaymentPlan\Factory;
+namespace Ice\PaymentPlan\Calculator;
 
+use Ice\PaymentPlan\Calculator\PaymentPlanCalculatorInterface;
 use Ice\PaymentPlan\PlanDefinition;
-use Ice\PaymentPlan\Factory\Exception\UnsupportedPlanException;
+use Ice\PaymentPlan\Calculator\Exception\UnsupportedPlanException;
 use Ice\PaymentPlan\PlanParameters;
 use Ice\PaymentPlan\DueDate;
 use Ice\PaymentPlan\PlannedPayment;
 use Ice\PaymentPlan\PaymentPlan;
 use Money\Money;
 
-class PercentOnDateFactory implements PaymentPlanFactoryInterface
+class PercentOnDateCalculator implements PaymentPlanCalculatorInterface
 {
     public function supportsDefinition(PlanDefinition $planCode)
     {

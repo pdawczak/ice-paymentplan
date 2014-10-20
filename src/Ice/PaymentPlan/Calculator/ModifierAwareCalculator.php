@@ -1,23 +1,23 @@
 <?php
 
-namespace Ice\PaymentPlan\Factory;
+namespace Ice\PaymentPlan\Calculator;
 
-use Ice\PaymentPlan\Factory\Exception\UnsupportedModifierException;
+use Ice\PaymentPlan\Calculator\Exception\UnsupportedModifierException;
 use Ice\PaymentPlan\PlanParameters;
 use Ice\PaymentPlan\PlanDefinition;
-use Ice\PaymentPlan\Factory\PlanModifierInterface;
+use Ice\PaymentPlan\Calculator\PlanModifierInterface;
 use Money\Money;
 
 /**
- * Class ModifierAwareFactory
- * @package Ice\PaymentPlan\Factory
+ * Class ModifierAwareCalculator
+ * @package Ice\PaymentPlan\Calculator
  */
-class ModifierAwareFactory implements PaymentPlanFactoryInterface
+class ModifierAwareCalculator implements PaymentPlanCalculatorInterface
 {
     /**
-     * @var PaymentPlanFactoryInterface
+     * @var PaymentPlanCalculatorInterface
      */
-    private $childFactory;
+    private $childCalculator;
 
     /**
      * @var PlanModifierInterface[]
@@ -25,19 +25,19 @@ class ModifierAwareFactory implements PaymentPlanFactoryInterface
     private $modifiers;
 
     /**
-     * @param PaymentPlanFactoryInterface $childFactory
+     * @param PaymentPlanCalculatorInterface $childCalculator
      */
-    public function __construct(PaymentPlanFactoryInterface $childFactory)
+    public function __construct(PaymentPlanCalculatorInterface $childCalculator)
     {
-        $this->childFactory = $childFactory;
+        $this->childCalculator = $childCalculator;
     }
 
     /**
      * @param $alias
-     * @param PaymentPlanFactoryInterface $modifier
+     * @param PaymentPlanCalculatorInterface $modifier
      * @return $this
      */
-    public function registerModifier($alias, PaymentPlanFactoryInterface $modifier)
+    public function registerModifier($alias, PaymentPlanCalculatorInterface $modifier)
     {
         $this->modifiers[$alias] = $modifier;
         return $this;
@@ -52,21 +52,21 @@ class ModifierAwareFactory implements PaymentPlanFactoryInterface
      */
     public function getPlan(PlanDefinition $definition, Money $amountToPay, PlanParameters $parameters)
     {
-        $factory = $this->getModifiedFactory(
+        $calculator = $this->getModifiedCalculator(
             $definition->hasAttribute('modifiers') ? $definition->getAttribute('modifiers') : []
         );
 
-        return $factory->getPlan($definition, $amountToPay, $parameters);
+        return $calculator->getPlan($definition, $amountToPay, $parameters);
     }
 
     /**
      * @param array|string[] $modifiers
      * @throws UnsupportedModifierException
-     * @return PaymentPlanFactoryInterface
+     * @return PaymentPlanCalculatorInterface
      */
-    private function getModifiedFactory($modifiers)
+    private function getModifiedCalculator($modifiers)
     {
-        $baseFactory = $this->childFactory;
+        $baseCalculator = $this->childCalculator;
 
         foreach ($modifiers as $modifierAlias) {
             if (!isset($this->modifiers[$modifierAlias])) {
@@ -74,11 +74,11 @@ class ModifierAwareFactory implements PaymentPlanFactoryInterface
             }
 
             $modifier = $this->modifiers[$modifierAlias];
-            $modifier->setBaseFactory($baseFactory);
-            $baseFactory = $modifier;
+            $modifier->setBaseCalculator($baseCalculator);
+            $baseCalculator = $modifier;
         }
 
-        return $baseFactory;
+        return $baseCalculator;
     }
 
     /**
@@ -90,7 +90,7 @@ class ModifierAwareFactory implements PaymentPlanFactoryInterface
      */
     public function isAvailable(PlanDefinition $definition, Money $amountToPay, PlanParameters $parameters)
     {
-        return $this->childFactory->isAvailable($definition, $amountToPay, $parameters);
+        return $this->childCalculator->isAvailable($definition, $amountToPay, $parameters);
     }
 
     /**
@@ -99,6 +99,6 @@ class ModifierAwareFactory implements PaymentPlanFactoryInterface
      */
     public function supportsDefinition(PlanDefinition $definition)
     {
-        return $this->childFactory->supportsDefinition($definition);
+        return $this->childCalculator->supportsDefinition($definition);
     }
 }
