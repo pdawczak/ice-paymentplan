@@ -21,7 +21,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     function setUp()
     {
         $compositeFactory = new CompositePlanCalculator();
-        $compositeFactory->registerFactory(new PercentOnDateCalculator());
+        $compositeFactory->registerCalculator(new PercentOnDateCalculator());
         $this->factory = new ModifierAwareCalculator($compositeFactory);
         $this->factory->registerModifier('bursary_off_final_payment', new BursaryOffFinalPaymentModifier());
     }
