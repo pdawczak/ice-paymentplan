@@ -32,6 +32,11 @@ class DueDate
      */
     private $day;
 
+    /**
+     * @param integer $year
+     * @param integer $month
+     * @param integer $day
+     */
     private function __construct($year, $month, $day)
     {
         $this->year = $year;

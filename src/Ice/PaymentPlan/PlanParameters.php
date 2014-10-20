@@ -27,6 +27,9 @@ class PlanParameters
         return new static($attributes);
     }
 
+    /**
+     * @param string $name
+     */
     public function hasParameter($name)
     {
         return in_array($name, array_keys($this->parameters));
@@ -37,6 +40,9 @@ class PlanParameters
         return count(array_diff_key(array_flip($names), $this->parameters)) === 0;
     }
 
+    /**
+     * @param string $name
+     */
     public function get($name)
     {
         return $this->parameters[$name];

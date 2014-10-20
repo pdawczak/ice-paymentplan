@@ -118,7 +118,7 @@ class BursaryOffFinalPaymentModifier implements PlanModifierInterface
 
     /**
      * @param Money $total
-     * @param $numberOfParts
+     * @param integer $numberOfParts
      * @return Money[]
      */
     private function splitMoneyEvenly(Money $total, $numberOfParts)

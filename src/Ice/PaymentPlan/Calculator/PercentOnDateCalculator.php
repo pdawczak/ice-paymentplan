@@ -4,7 +4,6 @@ namespace Ice\PaymentPlan\Calculator;
 
 use Ice\PaymentPlan\Calculator\PaymentPlanCalculatorInterface;
 use Ice\PaymentPlan\PlanDefinition;
-use Ice\PaymentPlan\Calculator\Exception\UnsupportedPlanException;
 use Ice\PaymentPlan\PlanParameters;
 use Ice\PaymentPlan\DueDate;
 use Ice\PaymentPlan\PlannedPayment;

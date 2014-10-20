@@ -48,11 +48,17 @@ class PlanDefinition
         return $this->name;
     }
 
+    /**
+     * @param string $attributeName
+     */
     public function hasAttribute($attributeName)
     {
         return in_array($attributeName, array_keys($this->attributes));
     }
 
+    /**
+     * @param string $attributeName
+     */
     public function getAttribute($attributeName)
     {
         return $this->attributes[$attributeName];
