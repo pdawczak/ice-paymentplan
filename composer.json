@@ -1,5 +1,5 @@
 {
-    "name": "ice/paymentplan",
+    "name": "cambridgeuniversity/ice-paymentplan",
     "type": "library",
     "description": "Calculate payment plans",
     "license": "MIT",
