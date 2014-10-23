@@ -22,4 +22,16 @@ class DueDateSpec extends ObjectBehavior
         $this->isExactlyOneYearEarlierThan(DueDate::fromString('2015-02-01'))->shouldReturn(false);
         $this->isExactlyOneYearEarlierThan(DueDate::fromString('2013-01-01'))->shouldReturn(false);
     }
+
+    function it_can_be_formatted()
+    {
+        $this->beConstructedThrough('fromString', ['2014-01-01']);
+        $this->format('Y/m/d')->shouldReturn('2014/01/01');
+    }
+
+    function it_can_be_cast_to_a_string()
+    {
+        $this->beConstructedThrough('fromString', ['2014-01-01']);
+        $this->__toString()->shouldReturn('2014-01-01');
+    }
 }

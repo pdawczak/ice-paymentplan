@@ -66,4 +66,26 @@ class DueDate
             $this->day === $dueDate->day
         );
     }
+
+    /**
+     * Format using a PHP date format string
+     *
+     * @param $format
+     * @return string
+     */
+    public function format($format)
+    {
+        $dateTime = new \DateTime(sprintf('%d-%d-%d', $this->year, $this->month, $this->day));
+        return $dateTime->format($format);
+    }
+
+    /**
+     * Support string conversion, equivalent to calling format('Y-m-d')
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->format('Y-m-d');
+    }
 }
