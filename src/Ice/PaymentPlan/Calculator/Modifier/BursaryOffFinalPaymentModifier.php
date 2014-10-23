@@ -72,7 +72,7 @@ class BursaryOffFinalPaymentModifier implements PlanModifierInterface
         foreach ($spreadDiscounts as $loopIndex => $discountPart) {
             $paymentIndex = $indicesToSubtractFrom[$loopIndex];
             $newReversedPlannedPayments[$paymentIndex] =
-                $newReversedPlannedPayments[$paymentIndex]->subtractFromAmount($discountPart);
+                $newReversedPlannedPayments[$paymentIndex]->subtractAmount($discountPart);
         }
 
         return new PaymentPlan(
